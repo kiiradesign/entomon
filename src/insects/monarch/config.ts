@@ -1,0 +1,45 @@
+import type { InsectConfig } from "../types";
+
+export const monarchConfig: InsectConfig = {
+  id: "monarch",
+  displayName: "Monarch",
+  model: {
+    wingspanPx: 60,
+    hotspot: { x: 0, y: -0.13, z: 0 },
+    tilt: 0.08,
+  },
+  follow: {
+    response: 0.24,
+    dragResponse: 0.16,
+    rotationResponse: 0.22,
+    uprightResponse: 0.7,
+    faceSpeed: 260,
+    bankResponse: 0.2,
+    maxBank: 0.5,
+    idleSpeed: 40,
+    dartAccel: 6500,
+    dartHold: 0.28,
+    noiseCruise: 1,
+    noiseIdle: 2.5,
+    bobAmount: 1.2,
+    tiltTowardInteractive: 0.22,
+    glide: 0.45,
+  },
+  flap: {
+    idle: { freqHz: 2.6, amplitude: 0.55, rest: 0.12, hindPhaseLag: 0.06 },
+    cruise: { freqHz: 5.6, amplitude: 0.68, rest: 0.08, hindPhaseLag: 0.05 },
+    dart: { freqHz: 8.5, amplitude: 0.62, rest: 0.06, hindPhaseLag: 0.04 },
+    hoverInteractive: { freqHz: 2.0, amplitude: 0.7, rest: 0.16, hindPhaseLag: 0.08 },
+    pressed: { freqHz: 6, amplitude: 0.4, rest: 0.1, hindPhaseLag: 0.03 },
+    settle: { freqHz: 3.2, amplitude: 0.5, rest: 0.1, hindPhaseLag: 0.06 },
+  },
+  click: {
+    duration: 0.22,
+    dip: 0.08,
+    pitch: 0.25,
+    clapCycles: 2,
+    clapAngle: 1.25,
+    settle: 0.35,
+    holdRaise: 0.3,
+  },
+};

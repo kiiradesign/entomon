@@ -1,0 +1,89 @@
+:root {
+  color: #f4efe6;
+  background: #1c140e;
+  font: 16px/1.5 ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #5a2a12 0%, transparent 50%),
+    radial-gradient(900px 500px at 100% 100%, #3a2818 0%, transparent 45%),
+    #1c140e;
+}
+
+#app {
+  max-width: 40rem;
+  padding: 12vh 8vw 8vh;
+}
+
+.eyebrow {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: #e8a26a;
+  margin: 0 0 0.6rem;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-weight: 560;
+  margin: 0 0 0.8rem;
+}
+
+.lede,
+.hint {
+  color: #cbbba8;
+  max-width: 34rem;
+}
+
+.targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: end;
+  margin: 2.5rem 0 2rem;
+}
+
+a,
+button,
+input {
+  font: inherit;
+}
+
+a {
+  color: #ffd2a8;
+}
+
+button,
+input {
+  background: #2a1d14;
+  color: #f4efe6;
+  border: 1px solid #6a4630;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+}
+
+label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #cbbba8;
+}
+
+.hint code {
+  font-size: 0.85em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    background: #1c140e;
+  }
+}

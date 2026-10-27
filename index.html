@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entomon — Monarch cursor</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <p class="eyebrow">Entomon</p>
+        <h1>Monarch cursor</h1>
+        <p class="lede">
+          Move slowly to hover. Sweep to cruise. Flick to dart. Hover links and
+          buttons, then click.
+        </p>
+      </header>
+
+      <section class="targets">
+        <a href="/preview/wiki/Butterfly">Wikipedia · Butterfly</a>
+        <button type="button">Interactive button</button>
+        <label>
+          Text field
+          <input type="text" placeholder="Hover, then type" />
+        </label>
+      </section>
+
+      <p class="hint">
+        Native cursor is hidden. The Wikipedia link loads a local preview with
+        the overlay injected. For the live site, load the unpacked extension in
+        <code>extension/</code> after <code>npm run build:inject</code>.
+      </p>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

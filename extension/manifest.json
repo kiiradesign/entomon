@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Entomon",
+  "version": "0.1.1",
+  "description": "3D insect cursor — Monarch butterfly overlay",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "https://*.wikipedia.org/*",
+    "https://wikipedia.org/*"
+  ],
+  "action": {
+    "default_title": "Enable Entomon on this page"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.wikipedia.org/*", "https://wikipedia.org/*"],
+      "js": ["dist/inject.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
