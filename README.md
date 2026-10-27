@@ -1,6 +1,6 @@
 # Entomon
 
-Realistic insect cursors for the browser.
+Realistic insect cursors for the web.
 
 <img width="1200" height="630" alt="Frame 10" src="https://github.com/user-attachments/assets/033517c9-cf22-41ec-b89a-e75404a10917" />
 
