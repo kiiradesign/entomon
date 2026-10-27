@@ -78,6 +78,12 @@ export function wikiPreview(): Plugin {
           res.end();
           return;
         }
+        if (get && path === "/dragonfly") {
+          res.statusCode = 302;
+          res.setHeader("Location", "/wiki/Dragonfly");
+          res.end();
+          return;
+        }
         if (get && path.startsWith("/preview")) {
           res.statusCode = 302;
           res.setHeader("Location", url.slice("/preview".length) || START);

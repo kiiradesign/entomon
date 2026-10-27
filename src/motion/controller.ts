@@ -32,6 +32,7 @@ export class InsectController {
   readonly dip = new Spring1(0);
   readonly glide = new Spring1(0);
   readonly press = new Spring1(0);
+  readonly quiet = new Spring1(0);
 
   private phase = 0;
   private clickAge = 99;
@@ -42,6 +43,7 @@ export class InsectController {
   private lastVy = 0;
   private time = 0;
   private travelDir = 0;
+  private stillTime = 0;
 
   constructor(
     private readonly config: InsectConfig,
@@ -83,7 +85,10 @@ export class InsectController {
     this.state = this.resolveState(pointer, speed);
     const calm = this.state === "idle" || this.state === "hoverInteractive";
 
-    const noise = reduced ? 0 : calm ? f.noiseIdle : f.noiseCruise;
+    const precision = f.precision ?? 0;
+    const quietTarget = precision * (pointer.overInteractive ? 1 : speed < f.idleSpeed ? 0.75 : 0);
+    this.quiet.step(quietTarget, dt, 0.25);
+    const noise = (reduced ? 0 : calm ? f.noiseIdle : f.noiseCruise) * (1 - this.quiet.pos);
     const nx = signedNoise2(this.time * 0.35, 0.2) * noise;
     const ny = signedNoise2(1.7, this.time * 0.32) * noise;
     const tx = pointer.x + nx - width * 0.5;
@@ -96,7 +101,12 @@ export class InsectController {
 
     const travel = Math.hypot(vx, vy);
     if (travel > 14) this.travelDir = Math.atan2(vx, vy);
-    const faceTarget = reduced || (pointer.down && !pointer.dragging) ? 0 : smoothstep(f.idleSpeed * 1.5, f.faceSpeed, travel);
+    this.stillTime = travel < f.idleSpeed * 1.5 ? this.stillTime + dt : 0;
+    const holding = this.stillTime < (f.uprightDelay ?? 0);
+    const faceTarget =
+      reduced || (pointer.down && !pointer.dragging)
+        ? 0
+        : Math.max(smoothstep(f.idleSpeed * 1.5, f.faceSpeed, travel), holding ? this.facing.pos : 0);
     this.facing.step(
       faceTarget,
       dt,
@@ -135,7 +145,7 @@ export class InsectController {
     this.phase += dt * this.freq.pos * (1 + 0.25 * effort) * (1 - this.glide.pos * 0.35);
     const lag = profile.hindPhaseLag;
     const strokeAmp = this.amp.pos * (1 + 0.2 * effort) * (1 - this.glide.pos);
-    const glideHold = this.glide.pos * 0.14;
+    const glideHold = this.glide.pos * (f.glideAngle ?? 0.14);
     let fore = this.rest.pos + glideHold + strokeAmp * (0.5 + 0.5 * stroke(this.phase));
     let hind = this.rest.pos + glideHold + strokeAmp * 0.92 * (0.5 + 0.5 * stroke(this.phase - lag));
 
@@ -149,8 +159,9 @@ export class InsectController {
     } else if (this.releaseAge < c.settle) {
       const u = this.releaseAge / c.settle;
       const open = Math.sin(u * Math.PI) * 0.12;
-      fore = Math.max(0.04, fore - open);
-      hind = Math.max(0.04, hind - open);
+      const floor = Math.min(0.04, this.rest.pos);
+      fore = Math.max(floor, fore - open);
+      hind = Math.max(floor, hind - open);
     }
 
     const jitter = reduced ? 0 : 0.025;
@@ -164,7 +175,8 @@ export class InsectController {
     });
 
     this.dip.step(this.clickAge < c.duration ? 1 : 0, dt, 0.07);
-    const bob = reduced ? 0 : Math.sin(this.time * 1.7) * f.bobAmount * (calm ? 1 : 0.35);
+    const bob =
+      reduced ? 0 : Math.sin(this.time * 1.7) * f.bobAmount * (calm ? 1 : 0.35) * (1 - this.quiet.pos);
 
     this.press.step(pointer.down && !pointer.dragging ? 1 : 0, dt, 0.14);
     this.rig.setLift(1 - 0.3 * this.press.pos - 0.25 * this.dip.pos);

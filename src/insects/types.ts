@@ -44,6 +44,8 @@ export type InsectConfig = {
     rotationResponse: number;
     /** Settle time for returning head-up once the insect is at rest, seconds. */
     uprightResponse: number;
+    /** Seconds the insect keeps facing its last travel direction after stopping. Defaults to 0. */
+    uprightDelay?: number;
     /** Speed in px/s at which the insect fully faces its travel direction. */
     faceSpeed: number;
     bankResponse: number;
@@ -60,6 +62,13 @@ export type InsectConfig = {
     tiltTowardInteractive: number;
     /** Chance-weighted gliding while cruising, 0 disables. */
     glide: number;
+    /** Wing angle offset held while gliding, radians. Defaults to 0.14 (slightly raised). */
+    glideAngle?: number;
+    /**
+     * 0..1: how much organic drift and bob are suppressed over interactive targets and while the
+     * pointer is still, so the hotspot lands exactly where the user points. Defaults to 0.
+     */
+    precision?: number;
   };
   flap: Record<MotionState, FlapProfile>;
   click: {

@@ -1,13 +1,9 @@
 import {
-  CanvasTexture,
-  CustomBlending,
   DoubleSide,
-  MaxEquation,
   Group,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
-  PlaneGeometry,
   QuadraticBezierCurve3,
   Shape,
   ShapeGeometry,
@@ -25,6 +21,7 @@ import {
   type WingKind,
 } from "./texture";
 import type { InsectRig, WingAngles } from "../types";
+import { ellipseShadow, outlineShadow, ShadowRig } from "../../render/soft-shadow";
 
 const HIND_SPAN = 0.88;
 
@@ -55,106 +52,14 @@ function bodyMaterial(color: string, roughness: number): MeshStandardMaterial {
   return new MeshStandardMaterial({ color, roughness, metalness: 0.05 });
 }
 
-const SHADOW_RES = 128;
 /** Gaussian sigma of the shadow in wing units (the wingspan is ~2 units). */
 const SHADOW_BLUR = 0.2;
-const SHADOW_PAD = SHADOW_BLUR * 3;
 const SHADOW_OFFSET = { x: 0.04, y: -0.14 };
 const SHADOW_OPACITY = 0.05;
 
-/** Three box-blur passes per axis approximate a gaussian; ctx.filter isn't available in every browser. */
-function blurAlpha(ctx: CanvasRenderingContext2D, radius: number): void {
-  const { width: w, height: h } = ctx.canvas;
-  const img = ctx.getImageData(0, 0, w, h);
-  const a = new Float32Array(w * h);
-  for (let i = 0; i < a.length; i++) a[i] = img.data[i * 4 + 3];
-  const tmp = new Float32Array(a.length);
-  const r = Math.max(1, Math.round(radius));
-  const pass = (src: Float32Array, dst: Float32Array, horizontal: boolean) => {
-    const n = horizontal ? w : h;
-    const lines = horizontal ? h : w;
-    for (let l = 0; l < lines; l++) {
-      const at = (k: number) => (horizontal ? l * w + k : k * w + l);
-      let sum = 0;
-      for (let k = -r; k <= r; k++) sum += src[at(Math.min(n - 1, Math.max(0, k)))];
-      for (let k = 0; k < n; k++) {
-        dst[at(k)] = sum / (2 * r + 1);
-        sum += src[at(Math.min(n - 1, k + r + 1))] - src[at(Math.max(0, k - r))];
-      }
-    }
-  };
-  for (let i = 0; i < 3; i++) {
-    pass(a, tmp, true);
-    pass(tmp, a, false);
-  }
-  // alphaMap samples the green channel, so the mask goes into rgb on an opaque canvas.
-  for (let i = 0; i < a.length; i++) {
-    img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = a[i];
-    img.data[i * 4 + 3] = 255;
-  }
-  ctx.putImageData(img, 0, 0);
-}
-
-function shadowMaterial(alphaMap: CanvasTexture): MeshBasicMaterial {
-  return new MeshBasicMaterial({
-    color: 0x000000,
-    alphaMap,
-    transparent: true,
-    opacity: SHADOW_OPACITY,
-    depthTest: false,
-    depthWrite: false,
-    toneMapped: false,
-    // Max keeps overlapping wing shadows from stacking into darker patches.
-    blending: CustomBlending,
-    blendEquation: MaxEquation,
-  });
-}
-
 function wingShadow(kind: WingKind, span: number): Mesh {
-  const pts = wingOutline(kind);
-  const b = wingBounds(pts, span, SHADOW_PAD);
-  const w = b.maxX - b.minX;
-  const h = b.maxY - b.minY;
-  const c = document.createElement("canvas");
-  c.width = SHADOW_RES;
-  c.height = SHADOW_RES;
-  const ctx = c.getContext("2d")!;
-  ctx.fillStyle = "#fff";
-  ctx.beginPath();
-  pts.forEach(([x, y], i) => {
-    const cx = ((x * span - b.minX) / w) * SHADOW_RES;
-    const cy = ((b.maxY - y * span) / h) * SHADOW_RES;
-    if (i === 0) ctx.moveTo(cx, cy);
-    else ctx.lineTo(cx, cy);
-  });
-  ctx.closePath();
-  ctx.fill();
-  blurAlpha(ctx, SHADOW_BLUR * (SHADOW_RES / Math.max(w, h)));
-  const geo = new PlaneGeometry(w, h);
-  geo.translate((b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2, 0);
-  const mesh = new Mesh(geo, shadowMaterial(new CanvasTexture(c)));
-  mesh.renderOrder = -1;
-  return mesh;
-}
-
-function bodyShadow(): Mesh {
-  const c = document.createElement("canvas");
-  const w = 0.08 + SHADOW_PAD * 2;
-  const h = 0.62 + SHADOW_PAD * 2;
-  const res = 64;
-  c.width = Math.round((res * w) / h);
-  c.height = res;
-  const ctx = c.getContext("2d")!;
-  const k = res / h;
-  ctx.fillStyle = "#fff";
-  ctx.beginPath();
-  ctx.ellipse(c.width / 2, res / 2, 0.04 * k, 0.31 * k, 0, 0, Math.PI * 2);
-  ctx.fill();
-  blurAlpha(ctx, SHADOW_BLUR * k);
-  const mesh = new Mesh(new PlaneGeometry(w, h), shadowMaterial(new CanvasTexture(c)));
-  mesh.position.y = -0.1;
-  mesh.renderOrder = -1;
-  return mesh;
+  const pts = wingOutline(kind).map(([x, y]): [number, number] => [x * span, y * span]);
+  return outlineShadow(pts, SHADOW_BLUR, SHADOW_OPACITY);
 }
 
 export function createMonarchRig(): InsectRig {
@@ -168,19 +73,12 @@ export function createMonarchRig(): InsectRig {
   const body = new Group();
   inner.add(body);
 
-  const shadowRoot = new Group();
-  shadowRoot.position.set(SHADOW_OFFSET.x, SHADOW_OFFSET.y, -1);
-  shadowRoot.scale.z = 0.001;
-  const sHeading = new Group();
-  const sPose = new Group();
-  const sInner = new Group();
-  const sBody = new Group();
-  shadowRoot.add(sHeading);
-  sHeading.add(sPose);
-  sPose.add(sInner);
-  sInner.add(sBody);
-  sBody.add(bodyShadow());
-  root.add(shadowRoot);
+  const shadow = new ShadowRig(SHADOW_OFFSET);
+  const sBody = shadow.body;
+  const bodyShadow = ellipseShadow(0.08, 0.62, SHADOW_BLUR, SHADOW_OPACITY);
+  bodyShadow.position.y = -0.1;
+  sBody.add(bodyShadow);
+  root.add(shadow.root);
 
   const black = bodyMaterial("#15100c", 0.55);
   const thorax = new Mesh(new SphereGeometry(0.085, 18, 14), black);
@@ -273,16 +171,13 @@ export function createMonarchRig(): InsectRig {
   };
   const left = makeSide(true);
   const right = makeSide(false);
-  const shadowMats: MeshBasicMaterial[] = [];
-  shadowRoot.traverse((o) => {
-    if (o instanceof Mesh) shadowMats.push(o.material as MeshBasicMaterial);
-  });
+  shadow.collect();
 
   const hotspot = monarchConfig.model.hotspot;
   inner.position.set(hotspot.x, hotspot.y, hotspot.z);
-  sInner.position.copy(inner.position);
+  shadow.inner.position.copy(inner.position);
   pose.rotation.x = monarchConfig.model.tilt;
-  sPose.rotation.x = pose.rotation.x;
+  shadow.pose.rotation.x = pose.rotation.x;
 
   const shade = (angle: number) => 1 - 0.32 * Math.sin(Math.min(Math.max(angle, 0), 1.5));
 
@@ -309,15 +204,12 @@ export function createMonarchRig(): InsectRig {
     },
     setHeading(heading: number, bank: number) {
       headingNode.rotation.z = -heading;
-      sHeading.rotation.z = -heading;
+      shadow.heading.rotation.z = -heading;
       pose.rotation.y = bank;
-      sPose.rotation.y = bank;
+      shadow.pose.rotation.y = bank;
     },
     setLift(lift: number) {
-      shadowRoot.position.x = SHADOW_OFFSET.x * lift;
-      shadowRoot.position.y = SHADOW_OFFSET.y * lift;
-      const opacity = SHADOW_OPACITY * (1.5 - 0.5 * lift);
-      for (const m of shadowMats) m.opacity = opacity;
+      shadow.setLift(lift);
     },
   };
 }

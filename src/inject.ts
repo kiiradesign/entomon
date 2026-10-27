@@ -1,3 +1,4 @@
+import { insectForLocation } from "./insects/registry";
 import { mountInsectCursor } from "./overlay";
 
-mountInsectCursor({ insect: "monarch" });
+mountInsectCursor({ insect: insectForLocation() });

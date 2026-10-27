@@ -23,7 +23,7 @@ export class OverlayRenderer {
       canvas,
       alpha: true,
       antialias: true,
-      premultipliedAlpha: false,
+      premultipliedAlpha: true,
       powerPreference: "high-performance",
     });
     this.renderer.setClearColor(0x000000, 0);
