@@ -1,6 +1,9 @@
 # Entomon
 
-Browser-only 3D insect cursor. This iteration ships the **Monarch butterfly**.
+Realistic insect cursors for the browser.
+
+<img width="1200" height="630" alt="Frame 10" src="https://github.com/user-attachments/assets/033517c9-cf22-41ec-b89a-e75404a10917" />
+
 
 ```bash
 npm install
