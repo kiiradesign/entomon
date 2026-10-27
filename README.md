@@ -4,8 +4,8 @@ Realistic 3D insect cursors for the web — a transparent Three.js overlay hides
 
 <img width="1200" height="630" alt="Frame 10" src="https://github.com/user-attachments/assets/033517c9-cf22-41ec-b89a-e75404a10917" />
 
-**Shipped:** Monarch butterfly, male Common Green Darner (*Anax junius*) dragonfly.  
-**Planned:** firefly, luna moth, damselfly, bee, ladybird.
+**Shipped:** Monarch butterfly, Common Green Darner dragonfly.  
+**Planned:** firefly, luna moth, bumble bee, and ladybird.
 
 ## Local preview (Wikipedia proxy)
 
