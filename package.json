@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "build:inject": "vite build --config vite.inject.config.ts",
+    "export:cursors": "node scripts/export-cursors.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "@types/three": "^0.170.0",
+    "playwright": "^1.49.1",
     "typescript": "^5.7.2",
     "vite": "^6.0.3"
   }

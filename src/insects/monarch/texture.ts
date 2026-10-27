@@ -1,4 +1,5 @@
 import { BufferGeometry, CanvasTexture, SRGBColorSpace } from "three";
+import { exportTextureSize, registerTextureCachePurge } from "../../render/export-quality";
 
 export type WingKind = "fore" | "hind";
 type P = [number, number];
@@ -171,20 +172,20 @@ export function applyWingUVs(geo: BufferGeometry, b: Bounds): void {
   uv.needsUpdate = true;
 }
 
-const SIZE = 1024;
 const INK = "#100a07";
 const WHITE = "#f7f3ea";
 const SPOT_ORANGE = "#f08a32";
 
 function paintWing(kind: WingKind): HTMLCanvasElement {
+  const size = exportTextureSize(1024);
   const canvas = document.createElement("canvas");
-  canvas.width = SIZE;
-  canvas.height = SIZE;
+  canvas.width = size;
+  canvas.height = size;
   const ctx = canvas.getContext("2d")!;
   const pts = wingOutline(kind);
   const b = wingBounds(pts, 1);
-  const sx = SIZE / (b.maxX - b.minX);
-  const sy = SIZE / (b.maxY - b.minY);
+  const sx = size / (b.maxX - b.minX);
+  const sy = size / (b.maxY - b.minY);
   const unit = (sx + sy) * 0.5;
   const px = ([x, y]: P): P => [(x - b.minX) * sx, (b.maxY - y) * sy];
   const q = (p: P): P => px(place(kind, p));
@@ -200,7 +201,7 @@ function paintWing(kind: WingKind): HTMLCanvasElement {
     if (close) ctx.closePath();
   };
 
-  ctx.clearRect(0, 0, SIZE, SIZE);
+  ctx.clearRect(0, 0, size, size);
   ctx.save();
   polyline(pts, true);
   ctx.clip();
@@ -217,7 +218,7 @@ function paintWing(kind: WingKind): HTMLCanvasElement {
     base.addColorStop(1, "#d8641a");
   }
   ctx.fillStyle = base;
-  ctx.fillRect(0, 0, SIZE, SIZE);
+  ctx.fillRect(0, 0, size, size);
 
   let seed = kind === "fore" ? 7 : 13;
   const rand = () => {
@@ -226,7 +227,7 @@ function paintWing(kind: WingKind): HTMLCanvasElement {
   };
   for (let i = 0; i < 2600; i++) {
     ctx.fillStyle = rand() > 0.5 ? "rgba(255,200,130,0.07)" : "rgba(110,36,0,0.08)";
-    ctx.fillRect(rand() * SIZE, rand() * SIZE, 3 + rand() * 4, 2 + rand() * 2);
+    ctx.fillRect(rand() * size, rand() * size, 3 + rand() * 4, 2 + rand() * 2);
   }
 
   const [rx, ry] = q([0, -0.02]);
@@ -234,7 +235,7 @@ function paintWing(kind: WingKind): HTMLCanvasElement {
   root.addColorStop(0, "rgba(16,10,7,0.95)");
   root.addColorStop(1, "rgba(16,10,7,0)");
   ctx.fillStyle = root;
-  ctx.fillRect(0, 0, SIZE, SIZE);
+  ctx.fillRect(0, 0, size, size);
 
   ctx.strokeStyle = INK;
   ctx.fillStyle = INK;
@@ -391,3 +392,8 @@ export function monarchWingTexture(kind: WingKind): CanvasTexture {
   cache.set(kind, tex);
   return tex;
 }
+
+registerTextureCachePurge(() => {
+  for (const tex of cache.values()) tex.dispose();
+  cache.clear();
+});

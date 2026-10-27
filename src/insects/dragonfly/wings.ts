@@ -1,4 +1,5 @@
 import { CanvasTexture, SRGBColorSpace } from "three";
+import { exportTextureSize, registerTextureCachePurge } from "../../render/export-quality";
 import { chaikin, outlineBounds, spanAt, type Bounds, type P } from "../../core/outline";
 
 export type WingKind = "fore" | "hind";
@@ -63,16 +64,15 @@ export function wingBounds(kind: WingKind): Bounds {
   return outlineBounds(wingOutline(kind), 0.02);
 }
 
-const TEX_W = 1024;
-
 function paintWing(kind: WingKind): HTMLCanvasElement {
+  const texW = exportTextureSize(1024);
   const pts = wingOutline(kind);
   const b = wingBounds(kind);
-  const sx = TEX_W / (b.maxX - b.minX);
+  const sx = texW / (b.maxX - b.minX);
   const texH = Math.max(128, Math.round((b.maxY - b.minY) * sx));
   const sy = texH / (b.maxY - b.minY);
   const canvas = document.createElement("canvas");
-  canvas.width = TEX_W;
+  canvas.width = texW;
   canvas.height = texH;
   const ctx = canvas.getContext("2d")!;
   const px = (x: number, y: number): P => [(x - b.minX) * sx, (b.maxY - y) * sy];
@@ -98,7 +98,7 @@ function paintWing(kind: WingKind): HTMLCanvasElement {
   ctx.clip();
 
   ctx.fillStyle = "rgba(240, 222, 178, 0.16)";
-  ctx.fillRect(0, 0, TEX_W, texH);
+  ctx.fillRect(0, 0, texW, texH);
   const xs = pts.map(([x]) => x);
   const x0 = Math.min(...xs) + 0.004;
   const x1 = Math.max(...xs) - 0.004;
@@ -109,14 +109,14 @@ function paintWing(kind: WingKind): HTMLCanvasElement {
   amber.addColorStop(0.7, "rgba(222, 176, 82, 0.16)");
   amber.addColorStop(1, "rgba(222, 176, 82, 0.06)");
   ctx.fillStyle = amber;
-  ctx.fillRect(0, 0, TEX_W, texH);
+  ctx.fillRect(0, 0, texW, texH);
 
   const [bx, by] = px(0, 0);
   const base = ctx.createRadialGradient(bx, by, 0, bx, by, 0.12 * sx);
   base.addColorStop(0, "rgba(150, 100, 40, 0.35)");
   base.addColorStop(1, "rgba(150, 100, 40, 0)");
   ctx.fillStyle = base;
-  ctx.fillRect(0, 0, TEX_W, texH);
+  ctx.fillRect(0, 0, texW, texH);
 
   /** Fraction across the chord (0 = leading edge, 1 = trailing edge) where each main vein runs. */
   const fractions = kind === "fore" ? [0.08, 0.16, 0.3, 0.46, 0.62, 0.78] : [0.07, 0.14, 0.26, 0.4, 0.55, 0.7, 0.84];
@@ -264,3 +264,8 @@ export function dragonflyWingTexture(kind: WingKind): CanvasTexture {
   cache.set(kind, tex);
   return tex;
 }
+
+registerTextureCachePurge(() => {
+  for (const tex of cache.values()) tex.dispose();
+  cache.clear();
+});

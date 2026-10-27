@@ -17,13 +17,17 @@ export class OverlayRenderer {
   readonly scene = new Scene();
   readonly camera: OrthographicCamera;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    options?: { preserveDrawingBuffer?: boolean },
+  ) {
     this.canvas = canvas;
     this.renderer = new WebGLRenderer({
       canvas,
       alpha: true,
       antialias: true,
       premultipliedAlpha: true,
+      preserveDrawingBuffer: options?.preserveDrawingBuffer ?? false,
       powerPreference: "high-performance",
     });
     this.renderer.setClearColor(0x000000, 0);

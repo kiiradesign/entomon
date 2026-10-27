@@ -24,6 +24,10 @@ const factories: Record<InsectId, InsectFactory | undefined> = {
   ladybird: undefined,
 };
 
+export function implementedInsectIds(): InsectId[] {
+  return insectOrder.filter((id) => configs[id] != null);
+}
+
 export const insectOrder: InsectId[] = [
   "monarch",
   "dragonfly",

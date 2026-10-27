@@ -27,6 +27,8 @@ Shortcuts: `/` → Butterfly, `/dragonfly` → Dragonfly.
 
 Motion lab (buttons and fields, no Wikipedia chrome): http://localhost:5173/lab.html
 
+**Marketing stills** (transparent PNG + SVG wrapper): [`assets/cursor-stills/`](assets/cursor-stills/). Regenerate with `npm run export:cursors` (requires dev server or Playwright will start one).
+
 ### Interaction states
 
 Both cursors share the same states: idle hover, cruise, dart on fast moves, slower wide-wing hover over links and controls, wing clap and dip on press, soft settle on release, and follow while dragging. Wings flap in every state; cruise adds occasional flat-wing glides.

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entomon — export cursor stills</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 40rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.5;
+      }
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+      figure {
+        margin: 0;
+        padding: 1rem;
+        background: repeating-conic-gradient(#ccc 0% 25%, #eee 0% 50%) 50% / 16px 16px;
+        border-radius: 8px;
+      }
+      img {
+        display: block;
+        max-width: 220px;
+        height: auto;
+      }
+      code {
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cursor stills</h1>
+    <p>
+      Transparent PNG exports of each implemented insect (idle pose, heading up). Run
+      <code>npm run export:cursors</code> to write files into <code>assets/cursor-stills/</code>, or use the
+      previews below and save manually.
+    </p>
+    <div id="previews" class="grid"></div>
+    <script type="module" src="/src/export-cursors.ts"></script>
+  </body>
+</html>
