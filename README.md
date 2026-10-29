@@ -24,7 +24,7 @@ The dev server proxies [en.wikipedia.org](https://en.wikipedia.org) so previews 
 
 Shortcuts: `/` → Butterfly, `/dragonfly` → Dragonfly, `/luna-moth` → Luna moth. The Luna moth article is always served in Wikipedia's night theme.
 
-**Which insect?** By default the slug picks the species (`Butterfly` → monarch, `Dragonfly` / `Common_green_darner` / `Anax_junius` → dragonfly, `Luna_moth` / `Actias_luna` → luna moth). Override anywhere with `?entomon=monarch`, `?entomon=dragonfly` or `?entomon=luna-moth`.
+**Which insect?** By default the slug picks the species (`Butterfly` → monarch, `Dragonfly` / `Common_green_darner` / `Anax_junius` → dragonfly, `Luna_moth` / `Actias_luna` → luna moth). Following links in the same tab keeps that insect; open another mapped article (or `?entomon=…`) to switch. Override anywhere with `?entomon=monarch`, `?entomon=dragonfly` or `?entomon=luna-moth`.
 
 Motion lab (buttons and fields, no Wikipedia chrome): http://localhost:5173/lab.html
 

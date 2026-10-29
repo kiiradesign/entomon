@@ -51,13 +51,53 @@ const ARTICLE_INSECTS: Record<string, InsectId> = {
   actias_luna: "luna-moth",
 };
 
-/** `?entomon=<id>` wins; otherwise the insect follows the Wikipedia article being viewed. */
+const SESSION_KEY = "entomon-insect";
+
+function implemented(id: string): id is InsectId {
+  return configs[id as InsectId] != null;
+}
+
+function articleInsect(pathname: string): InsectId | undefined {
+  const match = /^\/wiki\/([^?#]+)/.exec(pathname);
+  if (!match) return undefined;
+  const title = decodeURIComponent(match[1]).toLowerCase();
+  const id = ARTICLE_INSECTS[title];
+  return id && implemented(id) ? id : undefined;
+}
+
+function remember(id: InsectId): void {
+  try {
+    sessionStorage.setItem(SESSION_KEY, id);
+  } catch {
+    /* private mode / blocked storage */
+  }
+}
+
+function remembered(): InsectId | undefined {
+  try {
+    const id = sessionStorage.getItem(SESSION_KEY);
+    return id && implemented(id) ? id : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * `?entomon=<id>` wins, then the article's mapped species. On other pages, keep the insect
+ * chosen for this tab so following a Wikipedia link does not snap back to the Monarch.
+ */
 export function insectForLocation(loc: Location = window.location): InsectId {
   const requested = new URLSearchParams(loc.search).get("entomon");
-  if (requested && configs[requested as InsectId]) return requested as InsectId;
-  const match = /^\/wiki\/([^?#]+)/.exec(loc.pathname);
-  const title = match ? decodeURIComponent(match[1]).toLowerCase() : "";
-  return ARTICLE_INSECTS[title] ?? "monarch";
+  if (requested && implemented(requested)) {
+    remember(requested);
+    return requested;
+  }
+  const fromArticle = articleInsect(loc.pathname);
+  if (fromArticle) {
+    remember(fromArticle);
+    return fromArticle;
+  }
+  return remembered() ?? "monarch";
 }
 
 export function getInsectConfig(id: InsectId): InsectConfig {
