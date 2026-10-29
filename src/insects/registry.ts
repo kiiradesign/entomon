@@ -1,6 +1,8 @@
 import type { InsectFactory, InsectId, InsectConfig } from "./types";
 import { dragonflyConfig } from "./dragonfly/config";
 import { createDragonflyRig } from "./dragonfly/model";
+import { lunaMothConfig } from "./luna-moth/config";
+import { createLunaMothRig } from "./luna-moth/model";
 import { monarchConfig } from "./monarch/config";
 import { createMonarchRig } from "./monarch/model";
 
@@ -8,7 +10,7 @@ const configs: Record<InsectId, InsectConfig | undefined> = {
   monarch: monarchConfig,
   dragonfly: dragonflyConfig,
   firefly: undefined,
-  "luna-moth": undefined,
+  "luna-moth": lunaMothConfig,
   damselfly: undefined,
   bee: undefined,
   ladybird: undefined,
@@ -18,7 +20,7 @@ const factories: Record<InsectId, InsectFactory | undefined> = {
   monarch: createMonarchRig,
   dragonfly: createDragonflyRig,
   firefly: undefined,
-  "luna-moth": undefined,
+  "luna-moth": createLunaMothRig,
   damselfly: undefined,
   bee: undefined,
   ladybird: undefined,
@@ -45,6 +47,8 @@ const ARTICLE_INSECTS: Record<string, InsectId> = {
   dragonfly: "dragonfly",
   common_green_darner: "dragonfly",
   anax_junius: "dragonfly",
+  luna_moth: "luna-moth",
+  actias_luna: "luna-moth",
 };
 
 /** `?entomon=<id>` wins; otherwise the insect follows the Wikipedia article being viewed. */

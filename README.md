@@ -4,8 +4,8 @@ Realistic 3D insect cursors for the web — a transparent Three.js overlay hides
 
 <img width="1200" height="630" alt="Frame 10" src="https://github.com/user-attachments/assets/033517c9-cf22-41ec-b89a-e75404a10917" />
 
-**Shipped:** Monarch butterfly, Common Green Darner dragonfly.  
-**Planned:** firefly, luna moth, bumble bee, and ladybird.
+**Shipped:** Monarch butterfly, Common Green Darner dragonfly, Luna moth (*Actias luna*).  
+**Planned:** bumble bee and ladybird.
 
 ## Local preview (Wikipedia proxy)
 
@@ -20,10 +20,11 @@ The dev server proxies [en.wikipedia.org](https://en.wikipedia.org) so previews 
 | --- | --- | --- |
 | Monarch butterfly | Butterfly | http://localhost:5173/wiki/Butterfly |
 | Common Green Darner | Dragonfly | http://localhost:5173/wiki/Dragonfly |
+| Luna moth | Luna moth (dark mode) | http://localhost:5173/wiki/Luna_moth |
 
-Shortcuts: `/` → Butterfly, `/dragonfly` → Dragonfly.
+Shortcuts: `/` → Butterfly, `/dragonfly` → Dragonfly, `/luna-moth` → Luna moth. The Luna moth article is always served in Wikipedia's night theme.
 
-**Which insect?** By default the slug picks the species (`Butterfly` → monarch, `Dragonfly` / `Common_green_darner` / `Anax_junius` → dragonfly). Override anywhere with `?entomon=monarch` or `?entomon=dragonfly`.
+**Which insect?** By default the slug picks the species (`Butterfly` → monarch, `Dragonfly` / `Common_green_darner` / `Anax_junius` → dragonfly, `Luna_moth` / `Actias_luna` → luna moth). Override anywhere with `?entomon=monarch`, `?entomon=dragonfly` or `?entomon=luna-moth`.
 
 Motion lab (buttons and fields, no Wikipedia chrome): http://localhost:5173/lab.html
 
@@ -31,7 +32,7 @@ Motion lab (buttons and fields, no Wikipedia chrome): http://localhost:5173/lab.
 
 ### Interaction states
 
-Both cursors share the same states: idle hover, cruise, dart on fast moves, slower wide-wing hover over links and controls, wing clap and dip on press, soft settle on release, and follow while dragging. Wings flap in every state; cruise adds occasional flat-wing glides.
+All cursors share the same states: idle hover, cruise, dart on fast moves, slower wide-wing hover over links and controls, wing clap and dip on press, soft settle on release, and follow while dragging. Wings flap in every state; cruise adds occasional flat-wing glides. The luna moth's hindwing tails whip and trail behind each wingbeat.
 
 ## Live wikipedia.org
 

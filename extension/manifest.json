@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Entomon",
-  "version": "0.2.0",
-  "description": "3D insect cursors for Wikipedia — Monarch butterfly and Common Green Darner dragonfly",
+  "version": "0.3.0",
+  "description": "3D insect cursors for Wikipedia — Monarch butterfly, Common Green Darner dragonfly and Luna moth",
   "permissions": ["activeTab", "scripting"],
   "host_permissions": [
     "https://*.wikipedia.org/*",

@@ -9,8 +9,12 @@ const UA =
 /** Paths Wikipedia's own scripts request relative to the page origin (API, ResourceLoader, REST). */
 const PASSTHROUGH = ["/w/", "/api/", "/static/"];
 
-function rewriteHtml(html: string): string {
+/** Articles previewed in Wikipedia's night theme (the luna moth is a night flier). */
+const NIGHT_PAGES = /^\/wiki\/(luna_moth|actias_luna)$/i;
+
+function rewriteHtml(html: string, night: boolean): string {
   html = html.replace(/<meta[^>]+content-security-policy[^>]*>/gi, "");
+  if (night) html = html.replace(/(<html[^>]*\b)skin-theme-clientpref-(?:day|os)\b/, "$1skin-theme-clientpref-night");
   html = html.replace(/(["'\s,(])\/\/([a-z0-9.-]+\.(?:wikimedia|wikipedia|mediawiki|wikidata)\.org)/gi, "$1https://$2");
   html = html.replaceAll(`${WIKI}/wiki/`, "/wiki/");
   html = html.replace(/\b(src|srcset|action)=(["'])\/(?!\/|wiki\/)/g, `$1=$2${WIKI}/`);
@@ -43,7 +47,12 @@ async function servePage(url: string, res: ServerResponse): Promise<void> {
   res.statusCode = upstream.status;
   res.setHeader("content-type", "text/html; charset=utf-8");
   res.setHeader("cache-control", "no-store");
-  res.end(rewriteHtml(await upstream.text()));
+  const night = NIGHT_PAGES.test(finalPath);
+  if (night) {
+    // Wikipedia re-applies a saved theme from this cookie; a path-scoped copy wins on this article only.
+    res.setHeader("set-cookie", `enwikimwclientpreferences=skin-theme-clientpref-night; Path=${finalPath}`);
+  }
+  res.end(rewriteHtml(await upstream.text(), night));
 }
 
 async function passThrough(url: string, req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -78,9 +87,10 @@ export function wikiPreview(): Plugin {
           res.end();
           return;
         }
-        if (get && path === "/dragonfly") {
+        const shortcut = { "/dragonfly": "/wiki/Dragonfly", "/luna-moth": "/wiki/Luna_moth" }[path];
+        if (get && shortcut) {
           res.statusCode = 302;
-          res.setHeader("Location", "/wiki/Dragonfly");
+          res.setHeader("Location", shortcut);
           res.end();
           return;
         }
