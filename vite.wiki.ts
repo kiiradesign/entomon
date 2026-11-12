@@ -9,8 +9,8 @@ const UA =
 /** Paths Wikipedia's own scripts request relative to the page origin (API, ResourceLoader, REST). */
 const PASSTHROUGH = ["/w/", "/api/", "/static/"];
 
-/** Articles previewed in Wikipedia's night theme (the luna moth is a night flier). */
-const NIGHT_PAGES = /^\/wiki\/(luna_moth|actias_luna)$/i;
+/** Articles previewed in Wikipedia's night theme. */
+const NIGHT_PAGES = /^\/wiki\/(luna_moth|actias_luna|bumblebee|bumble_bee|bombus)$/i;
 
 function rewriteHtml(html: string, night: boolean): string {
   html = html.replace(/<meta[^>]+content-security-policy[^>]*>/gi, "");
@@ -87,7 +87,7 @@ export function wikiPreview(): Plugin {
           res.end();
           return;
         }
-        const shortcut = { "/dragonfly": "/wiki/Dragonfly", "/luna-moth": "/wiki/Luna_moth" }[path];
+        const shortcut = { "/dragonfly": "/wiki/Dragonfly", "/luna-moth": "/wiki/Luna_moth", "/bumblebee": "/wiki/Bumblebee" }[path];
         if (get && shortcut) {
           res.statusCode = 302;
           res.setHeader("Location", shortcut);

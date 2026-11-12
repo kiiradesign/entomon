@@ -1,4 +1,6 @@
 import type { InsectFactory, InsectId, InsectConfig } from "./types";
+import { beeConfig } from "./bee/config";
+import { createBeeRig } from "./bee/model";
 import { dragonflyConfig } from "./dragonfly/config";
 import { createDragonflyRig } from "./dragonfly/model";
 import { lunaMothConfig } from "./luna-moth/config";
@@ -12,8 +14,7 @@ const configs: Record<InsectId, InsectConfig | undefined> = {
   firefly: undefined,
   "luna-moth": lunaMothConfig,
   damselfly: undefined,
-  bee: undefined,
-  ladybird: undefined,
+  bee: beeConfig,
 };
 
 const factories: Record<InsectId, InsectFactory | undefined> = {
@@ -22,8 +23,7 @@ const factories: Record<InsectId, InsectFactory | undefined> = {
   firefly: undefined,
   "luna-moth": createLunaMothRig,
   damselfly: undefined,
-  bee: undefined,
-  ladybird: undefined,
+  bee: createBeeRig,
 };
 
 export function implementedInsectIds(): InsectId[] {
@@ -37,7 +37,6 @@ export const insectOrder: InsectId[] = [
   "luna-moth",
   "damselfly",
   "bee",
-  "ladybird",
 ];
 
 /** Wikipedia article titles that get a specific insect; anything else falls back to the Monarch. */
@@ -49,6 +48,9 @@ const ARTICLE_INSECTS: Record<string, InsectId> = {
   anax_junius: "dragonfly",
   luna_moth: "luna-moth",
   actias_luna: "luna-moth",
+  bumblebee: "bee",
+  bumble_bee: "bee",
+  bombus: "bee",
 };
 
 const SESSION_KEY = "entomon-insect";

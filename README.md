@@ -4,9 +4,6 @@ Realistic 3D insect cursors for the web — a transparent Three.js overlay hides
 
 <img width="1200" height="630" alt="Frame 10" src="https://github.com/user-attachments/assets/033517c9-cf22-41ec-b89a-e75404a10917" />
 
-**Shipped:** Monarch butterfly, Common Green Darner dragonfly, Luna moth (*Actias luna*).  
-**Planned:** bumble bee and ladybird.
-
 ## Local preview (Wikipedia proxy)
 
 ```bash
@@ -21,10 +18,11 @@ The dev server proxies [en.wikipedia.org](https://en.wikipedia.org) so previews 
 | Monarch butterfly | Butterfly | http://localhost:5173/wiki/Butterfly |
 | Common Green Darner | Dragonfly | http://localhost:5173/wiki/Dragonfly |
 | Luna moth | Luna moth (dark mode) | http://localhost:5173/wiki/Luna_moth |
+| Bumblebee | Bumblebee (dark mode) | http://localhost:5173/wiki/Bumblebee |
 
-Shortcuts: `/` → Butterfly, `/dragonfly` → Dragonfly, `/luna-moth` → Luna moth. The Luna moth article is always served in Wikipedia's night theme.
+Shortcuts: `/` → Butterfly, `/dragonfly` → Dragonfly, `/luna-moth` → Luna moth, `/bumblebee` → Bumblebee. The Luna moth and Bumblebee articles are always served in Wikipedia's night theme.
 
-**Which insect?** By default the slug picks the species (`Butterfly` → monarch, `Dragonfly` / `Common_green_darner` / `Anax_junius` → dragonfly, `Luna_moth` / `Actias_luna` → luna moth). Following links in the same tab keeps that insect; open another mapped article (or `?entomon=…`) to switch. Override anywhere with `?entomon=monarch`, `?entomon=dragonfly` or `?entomon=luna-moth`.
+**Which insect?** By default the slug picks the species (`Butterfly` → monarch, `Dragonfly` / `Common_green_darner` / `Anax_junius` → dragonfly, `Luna_moth` / `Actias_luna` → luna moth, `Bumblebee` / `Bombus` → bumblebee). Following links in the same tab keeps that insect; open another mapped article (or `?entomon=…`) to switch. Override anywhere with `?entomon=monarch`, `?entomon=dragonfly`, `?entomon=luna-moth` or `?entomon=bee`.
 
 Motion lab (buttons and fields, no Wikipedia chrome): http://localhost:5173/lab.html
 
@@ -32,7 +30,7 @@ Motion lab (buttons and fields, no Wikipedia chrome): http://localhost:5173/lab.
 
 ### Interaction states
 
-All cursors share the same states: idle hover, cruise, dart on fast moves, slower wide-wing hover over links and controls, wing clap and dip on press, soft settle on release, and follow while dragging. Wings flap in every state; cruise adds occasional flat-wing glides. The luna moth's hindwing tails whip and trail behind each wingbeat.
+All cursors share the same states: idle hover, cruise, dart on fast moves, slower wide-wing hover over links and controls, wing clap and dip on press, soft settle on release, and follow while dragging. Wings flap in every state; cruise adds occasional flat-wing glides. The luna moth's hindwing tails whip and trail behind each wingbeat. The bumblebee never glides: its coupled wings buzz fore and aft in a near-flat stroke over a shell-fur body.
 
 ## Live wikipedia.org
 

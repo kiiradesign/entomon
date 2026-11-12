@@ -6,8 +6,7 @@ export type InsectId =
   | "firefly"
   | "luna-moth"
   | "damselfly"
-  | "bee"
-  | "ladybird";
+  | "bee";
 
 export type MotionState =
   | "idle"
