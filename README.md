@@ -1,12 +1,17 @@
 # Entomon
 
-Realistic 3D insect cursors for the web — a transparent Three.js overlay hides the native pointer while each species keeps its own model, wing kinematics, and motion tuning on a shared interaction controller.
+Entomon is a project reimagining the regular old cursor as an insect. Wings beat as you move, the bug slows down over links and fields, and it dips when you click. There are currently four species: monarch butterfly, dragonfly, luna moth, bumblebee. The cursors are built to feel alive.
 
 ![Entomon insect cursors](assets/cursors.png)
 
 ## Tech stack
 
-TypeScript and [Vite](https://vite.dev/) for the app and inject bundles; [Three.js](https://threejs.org/) for the transparent overlay, procedural wing textures, and shadows; a small motion layer (springs + pointer states) with no UI framework. Local Wikipedia previews go through `vite.wiki.ts`; shipped cursors can load via a Chrome MV3 extension. High-res PNG stills use Playwright. The only runtime npm dependency is **three**.
+- TypeScript and Vite for the app and inject bundles
+- Three.js for the transparent overlay, procedural wing textures, and shadows
+- a small motion layer (springs + pointer states) with no UI framework. 
+- Local Wikipedia previews go through `vite.wiki.ts`; shipped cursors can load via a Chrome MV3 extension. 
+- High-res PNG stills use Playwright. 
+- The only runtime npm dependency is **three**.
 
 ## Local preview (Wikipedia proxy)
 
