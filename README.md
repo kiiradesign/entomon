@@ -4,6 +4,20 @@ Realistic 3D insect cursors for the web — a transparent Three.js overlay hides
 
 <img width="1200" height="630" alt="Frame 10" src="https://github.com/user-attachments/assets/033517c9-cf22-41ec-b89a-e75404a10917" />
 
+## Tech stack
+
+| Layer | Choices |
+| --- | --- |
+| Language | [TypeScript](https://www.typescriptlang.org/) |
+| Bundler / dev server | [Vite](https://vite.dev/) (app bundle + separate inject build) |
+| 3D | [Three.js](https://threejs.org/) — orthographic overlay, procedurally painted canvas textures, soft shadow rigs |
+| Motion | Critically damped springs and shared pointer/state machine in plain TS (no UI framework) |
+| Dev Wikipedia preview | Custom `vite.wiki.ts` proxy (HTML rewrite, night theme for selected articles) |
+| Browser extension | Chrome [Manifest V3](extension/) content script |
+| Stills export | [Playwright](https://playwright.dev/) driving `export-cursors.html` |
+
+Runtime dependency: **three** only. Everything else is dev tooling (`typescript`, `vite`, `playwright`, `@types/three`).
+
 ## Local preview (Wikipedia proxy)
 
 ```bash
